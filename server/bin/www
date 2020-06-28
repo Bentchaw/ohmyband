@@ -7,6 +7,7 @@
 const debug = require('debug')('server:server');
 const http = require('http');
 const app = require('../app');
+const knex = require('../config/knex/knex.js');
 
 /**
  * Normalize a port into a number, string, or false.
@@ -73,12 +74,16 @@ function onError(error) {
  * Event listener for HTTP server "listening" event.
  */
 
-function onListening() {
+async function onListening() {
   const addr = server.address();
   const bind = typeof addr === 'string'
     ? `pipe ${addr}`
     : `port ${addr.port}`;
   debug(`Listening on ${bind}`);
+
+  // Test db connection with dummy query
+  await knex.raw('select 1+1 as result');
+  console.log('Database connected successfully !');
 }
 
 /**
